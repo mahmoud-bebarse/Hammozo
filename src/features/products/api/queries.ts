@@ -62,11 +62,16 @@ export const useDeleteProduct = () => {
         queryClient.setQueryData(productKeys.all, context.previousProducts);
       }
     },
-    onSettled: () => {
-      // Refetch after mutation
-      queryClient.invalidateQueries({ queryKey: productKeys.all });
+    onSuccess: () => {
+      // Mark the queries as stale but don't refetch
+      // This ensures the optimistic update persists
+      queryClient.invalidateQueries({
+        queryKey: productKeys.all,
+        refetchType: 'none'
+      });
       queryClient.invalidateQueries({
         queryKey: ['products', 'category'],
+        refetchType: 'none'
       });
     },
   });

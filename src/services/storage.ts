@@ -23,6 +23,23 @@ export const mmkvStorage = {
 };
 
 /**
+ * Async storage wrapper for React Query persister
+ * Wraps synchronous MMKV operations in Promises
+ */
+export const asyncMmkvStorage = {
+  setItem: async (key: string, value: string): Promise<void> => {
+    storage.set(key, value);
+  },
+  getItem: async (key: string): Promise<string | null> => {
+    const value = storage.getString(key);
+    return value ?? null;
+  },
+  removeItem: async (key: string): Promise<void> => {
+    storage.delete(key);
+  },
+};
+
+/**
  * Type-safe JSON storage helpers
  */
 export const jsonStorage = {

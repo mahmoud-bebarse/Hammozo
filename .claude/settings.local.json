@@ -40,7 +40,8 @@
       "Bash(\"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager.bat\":*)",
       "Bash(cmd //c:*)",
       "Bash(./sdkmanager.bat:*)",
-      "Read(//c/Users/Mahmo/Android/Sdk/cmdline-tools/latest/bin/**)"
+      "Read(//c/Users/Mahmo/Android/Sdk/cmdline-tools/latest/bin/**)",
+      "Read(//c/Users/Mahmo/Downloads/WhatsApp Unknown 2025-10-16 at 11.44.41 AM/**)"
     ],
     "deny": [],
     "ask": []

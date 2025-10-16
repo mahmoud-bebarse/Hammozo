@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MainTabParamList } from '../utils/types';
 import { AllProductsScreen } from '../features/products/screens/AllProductsScreen';
@@ -18,7 +18,13 @@ const SignOutScreen: React.FC = () => {
   const { logout } = useAuth();
 
   useEffect(() => {
-    logout();
+    // Use setTimeout to defer logout until after the component is fully mounted
+    // This prevents view hierarchy errors
+    const timer = setTimeout(() => {
+      logout();
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [logout]);
 
   return <View style={styles.signOutContainer} />;
@@ -28,11 +34,7 @@ export const TabsNavigator: React.FC = () => {
   const { isLocked, unlock, resetTimer } = useAutoLock(true);
 
   return (
-    <Pressable
-      style={styles.container}
-      onTouchStart={resetTimer}
-      onTouchEnd={resetTimer}
-    >
+    <View style={styles.container} onTouchStart={resetTimer} onTouchEnd={resetTimer}>
       <OfflineBanner />
       <Tab.Navigator
         screenOptions={{
@@ -74,7 +76,7 @@ export const TabsNavigator: React.FC = () => {
         />
       </Tab.Navigator>
       <LockOverlay visible={isLocked} onUnlock={unlock} />
-    </Pressable>
+    </View>
   );
 };
 

@@ -1,7 +1,7 @@
 import { QueryClient } from '@tanstack/react-query';
-import { createSyncStoragePersister } from '@tanstack/react-query-persist-client';
+import type { PersistedClient, Persister } from '@tanstack/react-query-persist-client';
 import { QUERY_CONFIG, STORAGE_KEYS } from '../utils/constants';
-import { mmkvStorage } from './storage';
+import { asyncMmkvStorage } from './storage';
 
 /**
  * React Query client with optimized defaults
@@ -24,8 +24,23 @@ export const queryClient = new QueryClient({
 
 /**
  * MMKV-based persister for React Query cache
+ * Implements the Persister interface required by PersistQueryClientProvider
  */
-export const queryPersister = createSyncStoragePersister({
-  storage: mmkvStorage,
-  key: STORAGE_KEYS.QUERY_CACHE,
-});
+export const queryPersister: Persister = {
+  persistClient: async (client: PersistedClient) => {
+    await asyncMmkvStorage.setItem(
+      STORAGE_KEYS.QUERY_CACHE,
+      JSON.stringify(client)
+    );
+  },
+  restoreClient: async () => {
+    const stored = await asyncMmkvStorage.getItem(STORAGE_KEYS.QUERY_CACHE);
+    if (!stored) {
+      return undefined;
+    }
+    return JSON.parse(stored) as PersistedClient;
+  },
+  removeClient: async () => {
+    await asyncMmkvStorage.removeItem(STORAGE_KEYS.QUERY_CACHE);
+  },
+};
